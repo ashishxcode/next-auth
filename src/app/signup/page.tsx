@@ -83,7 +83,7 @@ const SingUpPage = () => {
 					Sign Up
 				</button>
 				<Link href='/login' className='text-indigo-500'>
-					Already have an account? Login
+					Already have an account ? Login
 				</Link>
 			</div>
 		</section>
