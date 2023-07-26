@@ -45,7 +45,7 @@ const LoginPage = () => {
 
 	return (
 		<section className='flex flex-col items-center justify-center min-h-screen py-2'>
-			<Card className='p-4 w-full sm:w-96'>
+			<Card className='w-full max-w-md p-4 rounded-xl'>
 				<CardTitle className='text-center'>Login</CardTitle>
 				<CardContent className='py-4'>
 					<Form {...form}>
@@ -106,10 +106,11 @@ const LoginPage = () => {
 						</form>
 					</Form>
 				</CardContent>
-				<div className='text-center'>
+				<div className='flex flex-col items-center justify-center space-y-2'>
+					<span className='text-sm text-gray-500'>Create a free account </span>
 					<Link href='/signup'>
-						<span className='text-sm text-gray-500 hover:text-gray-700'>
-							Don&apos;t have an account? Sign up
+						<span className='text-sm text-blue-500 hover:underline'>
+							Sign up
 						</span>
 					</Link>
 				</div>

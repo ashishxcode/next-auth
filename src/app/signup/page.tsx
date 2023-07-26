@@ -1,91 +1,166 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import {
+	Form,
+	FormControl,
+	FormLabel,
+	FormItem,
+	FormDescription,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import axios from 'axios';
 
+const schema = z.object({
+	name: z.string({ required_error: 'Name is required' }),
+	username: z.string({ required_error: 'Username is required' }),
+	email: z.string({ required_error: 'Email is required' }).email(),
+	password: z.string({ required_error: 'Password is required' }).min(8),
+});
+
 const SingUpPage = () => {
-	const [user, setUser] = React.useState({
-		name: '',
-		username: '',
-		email: '',
-		password: '',
+	const form = useForm<z.infer<typeof schema>>({
+		resolver: zodResolver(schema),
+		defaultValues: {
+			email: '',
+			password: '',
+		},
 	});
 
-	const onSignUp = async () => {
-		console.log('user', user);
+	const {
+		handleSubmit,
+		control,
+		formState: { errors, isSubmitting },
+	} = form;
+
+	const onSubmit = async (data: z.infer<typeof schema>) => {
+		console.log(data);
 	};
 
 	return (
 		<section className='flex flex-col items-center justify-center min-h-screen py-2'>
-			<h1 className='text-4xl font-700 text-center mb-8'>Sign Up</h1>
-			<hr />
+			<Card className='w-full max-w-md p-4 rounded-xl'>
+				<CardTitle className='text-center'>Sign Up</CardTitle>
+				<CardContent className='py-4'>
+					<Form {...form}>
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className='flex flex-col space-y-4'
+						>
+							<Controller
+								name='name'
+								control={control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel htmlFor='name'>Name</FormLabel>
+										<FormControl>
+											<Input
+												type='name'
+												placeholder='eg: John Doe'
+												{...field}
+											/>
+										</FormControl>
+										{errors.name && (
+											<FormDescription className='text-red-500'>
+												{errors.name.message}
+											</FormDescription>
+										)}
+									</FormItem>
+								)}
+							/>
 
-			<div className='flex flex-col items-center justify-center w-full px-20 max-w-2xl'>
-				<div className='flex flex-row items-center justify-center w-full gap-4'>
-					<div className='flex-1 flex flex-col w-full'>
-						<label htmlFor='name'>Name</label>
-						<input
-							id='name'
-							type='text'
-							className='px-4 py-2 mb-4 border  rounded-[10px] text-gray-800'
-							value={user.name}
-							placeholder='eg. John Doe'
-							onChange={(e) =>
-								setUser((prev) => ({ ...prev, name: e.target.value }))
-							}
-						/>
-					</div>
-					<div className='flex-1 flex flex-col w-full'>
-						<label htmlFor='username'>Username</label>
-						<input
-							id='username'
-							type='text'
-							className='px-4 py-2 mb-4 border  rounded-[10px] text-gray-800'
-							value={user.username}
-							placeholder='eg. johndoe'
-							onChange={(e) =>
-								setUser((prev) => ({ ...prev, username: e.target.value }))
-							}
-						/>
-					</div>
+							<Controller
+								name='username'
+								control={control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel htmlFor='username'>Username</FormLabel>
+										<FormControl>
+											<Input type='text' placeholder='eg: johndoe' {...field} />
+										</FormControl>
+										{errors.username && (
+											<FormDescription className='text-red-500'>
+												{errors.username.message}
+											</FormDescription>
+										)}
+									</FormItem>
+								)}
+							/>
+
+							<Controller
+								name='email'
+								control={control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel htmlFor='email'>Email</FormLabel>
+										<FormControl>
+											<Input
+												type='email'
+												placeholder='eg: johndoe@gmail.com'
+												{...field}
+											/>
+										</FormControl>
+										{errors.email && (
+											<FormDescription className='text-red-500'>
+												{errors.email.message}
+											</FormDescription>
+										)}
+									</FormItem>
+								)}
+							/>
+
+							<Controller
+								name='password'
+								control={control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel htmlFor='password'>Password</FormLabel>
+										<FormControl>
+											<Input
+												type='password'
+												placeholder='eg: ********'
+												{...field}
+											/>
+										</FormControl>
+										{errors.password && (
+											<FormDescription className='text-red-500'>
+												{errors.password.message}
+											</FormDescription>
+										)}
+									</FormItem>
+								)}
+							/>
+
+							<Button
+								type='submit'
+								variant='default'
+								className={cn('w-full', {
+									'opacity-50': isSubmitting,
+								})}
+								disabled={isSubmitting}
+							>
+								Sign Up
+							</Button>
+						</form>
+					</Form>
+				</CardContent>
+				<div className='flex flex-col items-center justify-center space-y-2'>
+					<span className='text-sm text-gray-500'>
+						Already have an account?
+					</span>
+					<Link href='/login'>
+						<span className='text-sm text-blue-500 hover:underline'>
+							Sign In
+						</span>
+					</Link>
 				</div>
-				<div className='flex flex-col w-full'>
-					<label htmlFor='email'>Email</label>
-					<input
-						id='email'
-						type='email'
-						className='px-4 py-2 mb-4 border rounded-[10px] text-gray-800'
-						value={user.email}
-						placeholder='eg. johndoe@gmail.com'
-						onChange={(e) =>
-							setUser((prev) => ({ ...prev, email: e.target.value }))
-						}
-					/>
-				</div>
-				<div className='flex flex-col w-full '>
-					<label htmlFor='password'>Password</label>
-					<input
-						id='password'
-						type='password'
-						className='px-4 py-2 mb-4 border  rounded-[10px] text-gray-800'
-						value={user.password}
-						placeholder='********'
-						onChange={(e) =>
-							setUser((prev) => ({ ...prev, password: e.target.value }))
-						}
-					/>
-				</div>
-				<button
-					className='w-full px-4 py-2 mb-4 border rounded-[10px] hover:bg-indigo-500 hover:text-white hover:border-indigo-500 transition-all duration-200 ease-in-out'
-					onClick={onSignUp}
-				>
-					Sign Up
-				</button>
-				<Link href='/login' className='text-indigo-500'>
-					Already have an account ? Login
-				</Link>
-			</div>
+			</Card>
 		</section>
 	);
 };
