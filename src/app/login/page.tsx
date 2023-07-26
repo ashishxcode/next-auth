@@ -1,61 +1,119 @@
 'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import {
+	Form,
+	FormControl,
+	FormLabel,
+	FormItem,
+	FormDescription,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
 import axios from 'axios';
 
+const loginSchema = z.object({
+	email: z.string({ required_error: 'Email is required' }).email(),
+	password: z.string({ required_error: 'Password is required' }).min(8),
+});
+
 const LoginPage = () => {
-	const [user, setUser] = React.useState({
-		email: '',
-		password: '',
+	const form = useForm<z.infer<typeof loginSchema>>({
+		resolver: zodResolver(loginSchema),
+		defaultValues: {
+			email: '',
+			password: '',
+		},
 	});
 
-	const onLogin = async () => {
-		console.log('user', user);
-	};
+	const {
+		handleSubmit,
+		control,
+		formState: { errors, isSubmitting },
+	} = form;
+
+	function onSubmit(data: z.infer<typeof loginSchema>) {
+		console.log(data);
+	}
 
 	return (
 		<section className='flex flex-col items-center justify-center min-h-screen py-2'>
-			<h1 className='text-4xl font-700 text-center mb-8'>Login</h1>
-			<hr />
-
-			<div className='flex flex-col items-center justify-center w-full px-20 max-w-2xl'>
-				<div className='flex flex-col w-full'>
-					<label htmlFor='email'>Email</label>
-					<input
-						id='email'
-						type='email'
-						className='px-4 py-2 mb-4 border rounded-[10px] text-gray-800'
-						value={user.email}
-						placeholder='eg. johndoe@gmail.com'
-						onChange={(e) =>
-							setUser((prev) => ({ ...prev, email: e.target.value }))
-						}
-					/>
+			<Card className='p-4 w-full sm:w-96'>
+				<CardTitle className='text-center'>Login</CardTitle>
+				<CardContent className='py-4'>
+					<Form {...form}>
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className='flex flex-col space-y-4'
+						>
+							<Controller
+								name='email'
+								control={control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel htmlFor='email'>Email</FormLabel>
+										<FormControl>
+											<Input type='email' placeholder='Email' {...field} />
+										</FormControl>
+										{errors.email && (
+											<FormDescription className='text-red-500'>
+												{errors.email.message}
+											</FormDescription>
+										)}
+									</FormItem>
+								)}
+							/>
+							<Controller
+								name='password'
+								control={control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel htmlFor='password'>Password</FormLabel>
+										<FormControl>
+											<Input
+												type='password'
+												placeholder='Password'
+												{...field}
+											/>
+										</FormControl>
+										{errors.password && (
+											<FormDescription className='text-red-500'>
+												{errors.password.message}
+											</FormDescription>
+										)}
+									</FormItem>
+								)}
+							/>
+							<FormItem>
+								<FormControl>
+									<Button
+										type='submit'
+										className={cn('w-full', {
+											'bg-blue-500': isSubmitting,
+										})}
+									>
+										{isSubmitting ? 'Logging in...' : 'Login'}
+									</Button>
+								</FormControl>
+							</FormItem>
+						</form>
+					</Form>
+				</CardContent>
+				<div className='text-center'>
+					<Link href='/signup'>
+						<span className='text-sm text-gray-500 hover:text-gray-700'>
+							Don&apos;t have an account? Sign up
+						</span>
+					</Link>
 				</div>
-				<div className='flex flex-col w-full '>
-					<label htmlFor='password'>Password</label>
-					<input
-						id='password'
-						type='password'
-						className='px-4 py-2 mb-4 border  rounded-[10px] text-gray-800'
-						value={user.password}
-						placeholder='********'
-						onChange={(e) =>
-							setUser((prev) => ({ ...prev, password: e.target.value }))
-						}
-					/>
-				</div>
-				<button
-					className='w-full px-4 py-2 mb-4 border rounded-[10px] hover:bg-indigo-500 hover:text-white hover:border-indigo-500 transition-all duration-200 ease-in-out'
-					onClick={onLogin}
-				>
-					Login
-				</button>
-				<Link href='/signup' className='text-indigo-500'>
-					Already have an account? Login
-				</Link>
-			</div>
+			</Card>
 		</section>
 	);
 };
