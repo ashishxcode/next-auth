@@ -105,9 +105,8 @@ const LoginPage = () => {
 								<FormControl>
 									<Button
 										type='submit'
-										className={cn('w-full', {
-											'bg-blue-500': isSubmitting,
-										})}
+										className='w-full'
+										disabled={isSubmitting}
 									>
 										{isSubmitting ? 'Logging in...' : 'Login'}
 									</Button>
