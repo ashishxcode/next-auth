@@ -2,6 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import * as z from 'zod';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
@@ -13,10 +17,7 @@ import {
 	FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-
+import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
 const loginSchema = z.object({
@@ -25,6 +26,8 @@ const loginSchema = z.object({
 });
 
 const LoginPage = () => {
+	const router = useRouter();
+
 	const form = useForm<z.infer<typeof loginSchema>>({
 		resolver: zodResolver(loginSchema),
 		defaultValues: {
@@ -39,9 +42,16 @@ const LoginPage = () => {
 		formState: { errors, isSubmitting },
 	} = form;
 
-	function onSubmit(data: z.infer<typeof loginSchema>) {
-		console.log(data);
-	}
+	const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+		try {
+			await axios.post('/api/auth/login', data);
+			toast.success('Login successful');
+			router.push('/profile');
+		} catch (err: any) {
+			console.log('LOGIN ERROR', err);
+			toast.error(err.response.data.message);
+		}
+	};
 
 	return (
 		<section className='flex flex-col items-center justify-center min-h-screen py-2'>
