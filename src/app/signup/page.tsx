@@ -1,6 +1,10 @@
 'use client';
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import axios from 'axios';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
@@ -12,10 +16,8 @@ import {
 	FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'react-hot-toast';
 import * as z from 'zod';
-import axios from 'axios';
 
 const schema = z.object({
 	name: z.string({ required_error: 'Name is required' }),
@@ -25,6 +27,8 @@ const schema = z.object({
 });
 
 const SingUpPage = () => {
+	const router = useRouter();
+
 	const form = useForm<z.infer<typeof schema>>({
 		resolver: zodResolver(schema),
 		defaultValues: {
@@ -40,7 +44,17 @@ const SingUpPage = () => {
 	} = form;
 
 	const onSubmit = async (data: z.infer<typeof schema>) => {
-		console.log(data);
+		try {
+			const response = await axios.post('/api/auth/signup', data);
+
+			if (response.status === 201) {
+				toast.success('Account created successfully');
+				router.push('/login');
+			}
+		} catch (error: any) {
+			console.log('SIGNUP ERROR', error);
+			toast.error(error?.response?.data?.message);
+		}
 	};
 
 	return (
@@ -145,7 +159,7 @@ const SingUpPage = () => {
 								})}
 								disabled={isSubmitting}
 							>
-								Sign Up
+								{isSubmitting ? 'Processing...' : 'Sign Up'}
 							</Button>
 						</form>
 					</Form>
