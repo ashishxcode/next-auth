@@ -1,51 +1,62 @@
-import {connect} from '@/lib/db';
+import { connect } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 import User from '@/models/userModel';
 import bcryptjs from 'bcryptjs';
 
 connect();
 
-export  async function POST(req: NextRequest) {
-    try {
-        const body = await req.json();
+export async function POST(req: NextRequest) {
+	try {
+		const body = await req.json();
 
-        const {name,username, email, password} = body;
+		const { name, username, email, password } = body;
 
-        console.log(body);
+		// check if user already exists
+		const user = await User.findOne({ email });
 
-        // check if user already exists
+		if (user) {
+			return NextResponse.json(
+				{
+					message: 'User already exists',
+				},
+				{
+					status: 400,
+				}
+			);
+		}
 
-        const user = await User.findOne({email});
+		// hash password
+		const salt = await bcryptjs.genSalt(10);
+		const hashedPassword = await bcryptjs.hash(password, salt);
 
-        if(user) {
-            return NextResponse.json({status: 400, message: 'User already exists'})
-        }
+		// create user
+		const newUser = new User({
+			name,
+			username,
+			email,
+			password: hashedPassword,
+		});
 
-        // hash password
-        const salt = await bcryptjs.genSalt(10);
-        const hashedPassword = await bcryptjs.hash(password, salt);
+		const savedUser = await newUser.save();
 
-        // create user
-        const newUser = new User({
-            name,
-            username,
-            email,
-            password: hashedPassword
-        });
-
-        const savedUser = await newUser.save();
-
-        return NextResponse.json({
-                status: 201, message: 'User created successfully', 
-                data: savedUser
-         })
-
-    } catch (err: any) {
-        return NextResponse.json({status:500 , message: err.message})
-    }
+		return NextResponse.json(
+			{
+				message: 'User created successfully',
+				data: savedUser,
+			},
+			{
+				status: 201,
+			}
+		);
+	} catch (err: any) {
+		return NextResponse.json(
+			{
+				message: 'Something went wrong',
+				error: err.message,
+			},
+			{
+				status: 500,
+			}
+		);
+	}
 }
-
-
-
-
-
