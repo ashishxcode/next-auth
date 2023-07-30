@@ -10,6 +10,7 @@ const PATH_ACCESS_CONTROL: PathAccessControl = {
 	'/login': 'public',
 	'/signup': 'public',
 	'/profile': 'private',
+	'/dashboard': 'private',
 };
 
 export function middleware(request: NextRequest) {
@@ -18,7 +19,7 @@ export function middleware(request: NextRequest) {
 	const access = PATH_ACCESS_CONTROL[path] || 'public';
 
 	if (access === 'public' && token !== '') {
-		return NextResponse.redirect(new URL('/profile', request.nextUrl));
+		return NextResponse.redirect(new URL('/dashboard', request.nextUrl));
 	}
 
 	if (access === 'private' && token === '') {
@@ -30,5 +31,5 @@ export function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-	matcher: ['/', '/login', '/signup', '/profile:path*'],
+	matcher: ['/', '/login', '/signup', '/dashboard', '/profile:path*'],
 };
