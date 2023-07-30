@@ -14,7 +14,7 @@ const ProfilePage = () => {
 		try {
 			const res = await axios.get('/api/auth/logout');
 			if (res.data.success) {
-				router.push('/');
+				router.push('/login');
 				toast.success(res.data.message);
 			}
 		} catch (error: any) {
