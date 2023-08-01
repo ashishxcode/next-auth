@@ -11,6 +11,7 @@ const PATH_ACCESS_CONTROL: PathAccessControl = {
 	'/signup': 'public',
 	'/profile': 'private',
 	'/dashboard': 'private',
+	'/verify-email': 'public',
 };
 
 export function middleware(request: NextRequest) {
