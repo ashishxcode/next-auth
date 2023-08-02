@@ -37,29 +37,34 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
 			},
 		});
 
-		// Prepare the email content
+		const mailLink = `${process.env.CLIENT_URL}/${
+			emailType === 'VERIFY_EMAIL' ? 'verify-email' : 'forgot-password'
+		}?
+		token=${hashedToken}&userId=${userId}`;
+
 		const emailSubject =
 			emailType === 'VERIFY_EMAIL'
 				? 'Verify your email'
 				: 'Reset your password';
 
+		const emailMessage =
+			emailType === 'VERIFY_EMAIL'
+				? 'verify your email'
+				: 'reset your password';
+
 		const emailContent = `
 		<div>
 		  <h1>Hi there!</h1>
 		  <p>
-		    Please ${
-					emailType === 'VERIFY_EMAIL'
-						? 'verify your email'
-						: 'reset your password'
-				} by clicking the link below.
+		    Please ${emailMessage} by clicking the link below.
 		  </p>
-		  <a href="${
-				process.env.CLIENT_URL
-			}/verify-email?token=${hashedToken}">Click here</a>
+		  <a href="${mailLink}">Click Here</a>
 		  <br/>
 		  or copy and paste the link below in your browser
 		  <br/>
-		  ${process.env.CLIENT_URL}/verify-email?token=${hashedToken}&userId=${userId}
+		  <p>
+		    ${mailLink}	
+		  </p>	
 	    </div>
 	    `;
 
