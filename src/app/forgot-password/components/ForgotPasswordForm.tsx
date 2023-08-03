@@ -29,7 +29,15 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-export const ForgotPasswordForm = () => {
+interface ForgotPasswordFormProps {
+	token: string;
+	userId: string;
+}
+
+export const ForgotPasswordForm = ({
+	token,
+	userId,
+}: ForgotPasswordFormProps) => {
 	const [showPassword, setShowPassword] = useState(false);
 
 	const router = useRouter();
@@ -49,10 +57,13 @@ export const ForgotPasswordForm = () => {
 	} = form;
 
 	const onSubmit = async (data: FormValues) => {
-		const { password, confirmPassword } = data;
+		const { password } = data;
 		const payload = {
+			token: token,
+			userId: userId,
 			newPassword: password,
 		};
+
 		try {
 			await axios.patch('/api/auth/forgot-password', payload);
 			toast.success('Check your email for the reset link');
