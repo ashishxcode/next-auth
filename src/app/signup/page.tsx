@@ -164,14 +164,10 @@ const SingUpPage = () => {
 						</form>
 					</Form>
 				</CardContent>
-				<div className='flex flex-col items-center justify-center space-y-2'>
-					<span className='text-sm text-gray-500'>
-						Already have an account?
-					</span>
+				<div className='text-sm text-center'>
+					<span className='text-gray-500 me-1'>Already have account ?</span>
 					<Link href='/login'>
-						<span className='text-sm text-blue-500 hover:underline'>
-							Sign In
-						</span>
+						<span className='text-gray-800 underline'>Login</span>
 					</Link>
 				</div>
 			</Card>

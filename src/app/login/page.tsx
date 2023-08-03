@@ -115,12 +115,10 @@ const LoginPage = () => {
 						</form>
 					</Form>
 				</CardContent>
-				<div className='flex flex-col items-center justify-center space-y-2'>
-					<span className='text-sm text-gray-500'>Create a free account </span>
-					<Link href='/signup'>
-						<span className='text-sm text-blue-500 hover:underline'>
-							Sign up
-						</span>
+
+				<div className='flex flex-col items-center gap-2 text-sm text-center'>
+					<Link href='/forgot-password'>
+						<span className='text-gray-900'>Forgot Password?</span>
 					</Link>
 				</div>
 			</Card>
