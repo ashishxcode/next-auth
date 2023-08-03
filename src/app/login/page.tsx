@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import * as z from 'zod';
@@ -17,6 +17,7 @@ import {
 	FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
@@ -26,6 +27,7 @@ const loginSchema = z.object({
 });
 
 const LoginPage = () => {
+	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
 
 	const form = useForm<z.infer<typeof loginSchema>>({
@@ -88,7 +90,7 @@ const LoginPage = () => {
 										<FormLabel htmlFor='password'>Password</FormLabel>
 										<FormControl>
 											<Input
-												type='password'
+												type={showPassword ? 'text' : 'password'}
 												placeholder='Password'
 												{...field}
 											/>
@@ -101,6 +103,16 @@ const LoginPage = () => {
 									</FormItem>
 								)}
 							/>
+							<div className='flex items-center space-x-2 py-2'>
+								<Checkbox
+									id='showPassword'
+									checked={showPassword}
+									onCheckedChange={() => setShowPassword(!showPassword)}
+								/>
+								<FormLabel htmlFor='showPassword' className='cursor-pointer'>
+									Show Password
+								</FormLabel>
+							</div>
 							<FormItem>
 								<FormControl>
 									<Button
