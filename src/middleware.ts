@@ -9,9 +9,9 @@ const PATH_ACCESS_CONTROL: PathAccessControl = {
 	'/': 'private',
 	'/login': 'public',
 	'/signup': 'public',
-	'/profile': 'private',
 	'/dashboard': 'private',
 	'/verify-email': 'public',
+	'/forgot-password': 'public',
 };
 
 export function middleware(request: NextRequest) {
@@ -32,5 +32,12 @@ export function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-	matcher: ['/', '/login', '/signup', '/dashboard', '/profile:path*'],
+	matcher: [
+		'/',
+		'/login',
+		'/signup',
+		'/dashboard',
+		'/verify-email',
+		'/forgot-password',
+	],
 };
