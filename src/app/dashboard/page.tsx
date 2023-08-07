@@ -3,16 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import Image from 'next/image';
+import { Separator } from '@/components/ui/separator';
+import { ProfileForm } from '@/app/dashboard/components/profile-form';
+import { SidebarNav } from '@/app/dashboard/components/sidebar-nav';
 
 interface UserData {
 	name: string;
@@ -21,7 +14,22 @@ interface UserData {
 	profile_picture: string;
 }
 
-const ProfilePage = () => {
+const sideNavItems = [
+	{
+		title: 'Profile',
+		value: 'profile',
+	},
+	{
+		title: 'Account',
+		value: 'account',
+	},
+	{
+		title: 'Danger Zone',
+		value: 'danger-zone',
+	},
+];
+
+const Dashboard = () => {
 	const [userData, setUserData] = useState<UserData>({
 		name: '',
 		email: '',
@@ -29,7 +37,7 @@ const ProfilePage = () => {
 		profile_picture: '',
 	});
 	const [fetchLoading, setFetchLoading] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [activeTab, setActiveTab] = useState(sideNavItems[0].value);
 
 	useEffect(() => {
 		const getUserData = async () => {
@@ -52,65 +60,48 @@ const ProfilePage = () => {
 
 	const router = useRouter();
 
-	const logout = async () => {
-		setLoading(true);
-		try {
-			const res = await axios.get('/api/auth/logout');
-			if (res.data.success) {
-				router.push('/login');
-				toast.success(res.data.message);
-			}
-		} catch (error: any) {
-			toast.error(error.response.data);
-		} finally {
-			setLoading(false);
+	function renderTab() {
+		switch (activeTab) {
+			case 'profile':
+				return <ProfileForm userData={userData} />;
+			case 'account':
+				return <p>Account</p>;
+			case 'danger-zone':
+				return <p>Danger Zone</p>;
+			default:
+				return <ProfileForm userData={userData} />;
 		}
-	};
+	}
 
 	return (
-		<div className=''>
+		<div>
 			{fetchLoading ? (
 				<p className='text-2xl font-bold'>Loading...</p>
 			) : (
 				<>
-					<nav className='flex items-center justify-between w-full px-4 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700'>
-						<Image
-							src='/vercel.svg'
-							alt='Vercel Logo'
-							className='dark:invert'
-							width={100}
-							height={24}
-							priority
-						/>
-
-						<DropdownMenu>
-							<DropdownMenuTrigger className='focus:outline-none'>
-								<Avatar>
-									<AvatarImage
-										src={userData.profile_picture}
-										alt={userData.name}
-									/>
-									<AvatarFallback>{userData.name[0]}</AvatarFallback>
-								</Avatar>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent>
-								<DropdownMenuLabel>Profile</DropdownMenuLabel>
-								<DropdownMenuSeparator />
-								<DropdownMenuItem onClick={logout}>
-									<span>Logout</span>
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</nav>
-					<main className='p-4'>
-						<h1 className='text-xl font-semibold text-start text-gray-800'>
-							Welcome {userData.name}
-						</h1>
-					</main>
+					<div className='space-y-2 p-8 pb-16'>
+						<div className='space-y-0.5'>
+							<h2 className='text-2xl font-bold tracking-tight'>Dashboard</h2>
+							<p className='text-muted-foreground'>
+								Manage your account settings.
+							</p>
+						</div>
+						<Separator className='my-6' />
+						<div className='flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0'>
+							<aside className='lg:w-1/5'>
+								<SidebarNav
+									items={sideNavItems}
+									activeTab={activeTab}
+									setActiveTab={setActiveTab}
+								/>
+							</aside>
+							<div className='flex-1 lg:max-w-2xl'>{renderTab()}</div>
+						</div>
+					</div>
 				</>
 			)}
 		</div>
 	);
 };
 
-export default ProfilePage;
+export default Dashboard;
