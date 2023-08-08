@@ -44,3 +44,55 @@ export async function GET(request: NextRequest) {
 		);
 	}
 }
+
+export async function PUT(request: NextRequest) {
+	try {
+		const body = await request.json();
+
+		const { userID, ...rest } = body;
+
+		const user = await User.findByIdAndUpdate(
+			{
+				_id: userID,
+			},
+			{
+				$set: {
+					...rest,
+				},
+			},
+			{
+				new: true,
+			}
+		);
+
+		if (!user) {
+			return NextResponse.json(
+				{
+					error: 'User not found',
+				},
+				{
+					status: 404,
+				}
+			);
+		}
+
+		return NextResponse.json(
+			{
+				result: user,
+				success: true,
+			},
+			{
+				status: 200,
+			}
+		);
+	} catch (error: any) {
+		return NextResponse.json(
+			{
+				error: error.message,
+			},
+			{
+				status: 500,
+			}
+		);
+	}
+}
