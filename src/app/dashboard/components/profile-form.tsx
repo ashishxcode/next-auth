@@ -14,6 +14,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@radix-ui/react-separator';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 interface UserData {
 	name: string;
@@ -43,7 +45,13 @@ export const ProfileForm = ({ userData }: { userData: UserData }) => {
 	} = form;
 
 	const onSubmit = async (data: z.infer<typeof profileSchema>) => {
-		console.log(data);
+		try {
+			await axios.put('/api/users/me', data);
+			toast.success('Profile updated successfully');
+		} catch (error: any) {
+			const { data } = error.response;
+			toast.error(data.message);
+		}
 	};
 
 	return (
