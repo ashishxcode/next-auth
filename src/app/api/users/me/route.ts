@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 		if (!user) {
 			return NextResponse.json(
 				{
-					error: 'User not found',
+					message: 'User not found',
 				},
 				{
 					status: 404,
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 	} catch (error: any) {
 		return NextResponse.json(
 			{
-				error: error.message,
+				message: error.message,
 			},
 			{
 				status: 500,
@@ -47,28 +47,46 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
 	try {
+		const userID = getDataFromToken(request);
 		const body = await request.json();
 
-		const { userID, ...rest } = body;
+		const { name, username } = body;
+
+		const usernameAlreadyTaken = await User.findOne({
+			username,
+			_id: {
+				$ne: userID,
+			},
+		});
+
+		if (usernameAlreadyTaken) {
+			return NextResponse.json(
+				{
+					message: 'Username already taken',
+				},
+				{
+					status: 400,
+				}
+			);
+		}
 
 		const user = await User.findByIdAndUpdate(
 			{
 				_id: userID,
 			},
 			{
-				$set: {
-					...rest,
-				},
+				name,
+				username,
 			},
 			{
 				new: true,
 			}
-		);
+		).select('-password');
 
 		if (!user) {
 			return NextResponse.json(
 				{
-					error: 'User not found',
+					message: 'User not found',
 				},
 				{
 					status: 404,
@@ -88,7 +106,7 @@ export async function PUT(request: NextRequest) {
 	} catch (error: any) {
 		return NextResponse.json(
 			{
-				error: error.message,
+				message: error.message,
 			},
 			{
 				status: 500,
