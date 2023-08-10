@@ -26,7 +26,7 @@ export function SidebarNav({
 	return (
 		<nav
 			className={cn(
-				'flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1',
+				'flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-2',
 				className
 			)}
 			{...props}
@@ -35,12 +35,7 @@ export function SidebarNav({
 				<Button
 					key={item.value}
 					onClick={() => handleTabChange(item.value)}
-					className={cn(
-						activeTab === item.value
-							? 'bg-primary text-white'
-							: 'bg-white text-primary',
-						'transition-all ease-in-out duration-200 border-bottom-2 justify-start hover:border-primary hover:text-white'
-					)}
+					variant={activeTab === item.value ? 'default' : 'ghost'}
 				>
 					{item.title}
 				</Button>
