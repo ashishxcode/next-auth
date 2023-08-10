@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { ThemeProvider } from '@/components/theme-provider';
 
 import { Toaster } from 'react-hot-toast';
 import { Montserrat } from 'next/font/google';
@@ -22,8 +23,10 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className={montserrat.className}>
-				<main>{children}</main>
-				<Toaster />
+				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+					<main>{children}</main>
+					<Toaster />
+				</ThemeProvider>
 			</body>
 		</html>
 	);
