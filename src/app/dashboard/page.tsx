@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast';
 import { Separator } from '@/components/ui/separator';
 import { ProfileForm } from '@/app/dashboard/components/profile-form';
 import { SidebarNav } from '@/app/dashboard/components/sidebar-nav';
+import { ModeToggle } from './components/mode-toggle';
 
 interface UserData {
 	name: string;
@@ -74,17 +75,21 @@ const Dashboard = () => {
 	}
 
 	return (
-		<div>
+		<div className='p-8'>
 			{fetchLoading ? (
 				<p className='text-2xl font-bold'>Loading...</p>
 			) : (
 				<>
-					<div className='space-y-2 p-8 pb-16'>
-						<div className='space-y-0.5'>
-							<h2 className='text-2xl font-bold tracking-tight'>Dashboard</h2>
-							<p className='text-muted-foreground'>
-								Manage your account settings.
-							</p>
+					<div className='pb-16'>
+						<div className='space-y-0.5 flex justify-between'>
+							<div>
+								<h2 className='text-2xl font-bold tracking-tight'>Dashboard</h2>
+								<p className='text-muted-foreground'>
+									Manage your account settings.
+								</p>
+							</div>
+
+							<ModeToggle />
 						</div>
 						<Separator className='my-6' />
 						<div className='flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0'>
