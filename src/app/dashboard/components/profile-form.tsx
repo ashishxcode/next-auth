@@ -14,22 +14,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@radix-ui/react-separator';
+import { UserDataProps } from '@/types/users';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-
-interface UserData {
-	name: string;
-	email: string;
-	username: string;
-	profile_picture: string;
-}
 
 const profileSchema = z.object({
 	name: z.string().optional(),
 	username: z.string().optional(),
 });
 
-export const ProfileForm = ({ userData }: { userData: UserData }) => {
+export const ProfileForm = ({ userData }: { userData: UserDataProps }) => {
 	const form = useForm<z.infer<typeof profileSchema>>({
 		resolver: zodResolver(profileSchema),
 		defaultValues: {

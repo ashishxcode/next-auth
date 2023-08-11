@@ -5,15 +5,10 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { Separator } from '@/components/ui/separator';
 import { ProfileForm } from '@/app/dashboard/components/profile-form';
+import { SettingForm } from './components/setting-form';
 import { SidebarNav } from '@/app/dashboard/components/sidebar-nav';
 import { ModeToggle } from './components/mode-toggle';
-
-interface UserData {
-	name: string;
-	email: string;
-	username: string;
-	profile_picture: string;
-}
+import { UserDataProps } from '@/types/users';
 
 const sideNavItems = [
 	{
@@ -21,8 +16,8 @@ const sideNavItems = [
 		value: 'profile',
 	},
 	{
-		title: 'Account',
-		value: 'account',
+		title: 'Setting',
+		value: 'setting',
 	},
 	{
 		title: 'Danger Zone',
@@ -31,7 +26,7 @@ const sideNavItems = [
 ];
 
 const Dashboard = () => {
-	const [userData, setUserData] = useState<UserData>({
+	const [userData, setUserData] = useState<UserDataProps>({
 		name: '',
 		email: '',
 		username: '',
@@ -65,8 +60,8 @@ const Dashboard = () => {
 		switch (activeTab) {
 			case 'profile':
 				return <ProfileForm userData={userData} />;
-			case 'account':
-				return <p>Account</p>;
+			case 'setting':
+				return <SettingForm userData={userData} />;
 			case 'danger-zone':
 				return <p>Danger Zone</p>;
 			default:
