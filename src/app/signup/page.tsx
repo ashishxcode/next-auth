@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
@@ -16,6 +16,7 @@ import {
 	FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'react-hot-toast';
 import * as z from 'zod';
 
@@ -27,6 +28,7 @@ const schema = z.object({
 });
 
 const SingUpPage = () => {
+	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
 
 	const form = useForm<z.infer<typeof schema>>({
@@ -67,46 +69,51 @@ const SingUpPage = () => {
 							onSubmit={handleSubmit(onSubmit)}
 							className='flex flex-col space-y-4'
 						>
-							<Controller
-								name='name'
-								control={control}
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel htmlFor='name'>Name</FormLabel>
-										<FormControl>
-											<Input
-												type='name'
-												placeholder='eg: John Doe'
-												{...field}
-											/>
-										</FormControl>
-										{errors.name && (
-											<FormDescription className='text-red-500'>
-												{errors.name.message}
-											</FormDescription>
-										)}
-									</FormItem>
-								)}
-							/>
+							<div className='flex items-center gap-4'>
+								<Controller
+									name='name'
+									control={control}
+									render={({ field }) => (
+										<FormItem className='flex-1'>
+											<FormLabel htmlFor='name'>Name</FormLabel>
+											<FormControl>
+												<Input
+													type='name'
+													placeholder='eg: John Doe'
+													{...field}
+												/>
+											</FormControl>
+											{errors.name && (
+												<FormDescription className='text-red-500'>
+													{errors.name.message}
+												</FormDescription>
+											)}
+										</FormItem>
+									)}
+								/>
 
-							<Controller
-								name='username'
-								control={control}
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel htmlFor='username'>Username</FormLabel>
-										<FormControl>
-											<Input type='text' placeholder='eg: johndoe' {...field} />
-										</FormControl>
-										{errors.username && (
-											<FormDescription className='text-red-500'>
-												{errors.username.message}
-											</FormDescription>
-										)}
-									</FormItem>
-								)}
-							/>
-
+								<Controller
+									name='username'
+									control={control}
+									render={({ field }) => (
+										<FormItem className='flex-1'>
+											<FormLabel htmlFor='username'>Username</FormLabel>
+											<FormControl>
+												<Input
+													type='text'
+													placeholder='eg: johndoe'
+													{...field}
+												/>
+											</FormControl>
+											{errors.username && (
+												<FormDescription className='text-red-500'>
+													{errors.username.message}
+												</FormDescription>
+											)}
+										</FormItem>
+									)}
+								/>
+							</div>
 							<Controller
 								name='email'
 								control={control}
@@ -137,7 +144,7 @@ const SingUpPage = () => {
 										<FormLabel htmlFor='password'>Password</FormLabel>
 										<FormControl>
 											<Input
-												type='password'
+												type={showPassword ? 'text' : 'password'}
 												placeholder='eg: ********'
 												{...field}
 											/>
@@ -150,6 +157,17 @@ const SingUpPage = () => {
 									</FormItem>
 								)}
 							/>
+
+							<div className='flex items-center space-x-2 py-2'>
+								<Checkbox
+									id='showPassword'
+									checked={showPassword}
+									onCheckedChange={() => setShowPassword(!showPassword)}
+								/>
+								<FormLabel htmlFor='showPassword' className='cursor-pointer'>
+									Show Password
+								</FormLabel>
+							</div>
 
 							<Button
 								type='submit'
