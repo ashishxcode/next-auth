@@ -91,9 +91,9 @@ export const ForgotPasswordLink = () => {
 					</Form>
 				</CardContent>
 				<p className='text-sm text-center'>
-					<span className='text-gray-500 me-1'>Remember your password?</span>
+					<span className='me-1'>Remember your password?</span>
 					<Link href='/login'>
-						<span className='text-gray-800 underline'>Login</span>
+						<span className='underline'>Login</span>
 					</Link>
 				</p>
 			</Card>

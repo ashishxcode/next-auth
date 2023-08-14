@@ -165,9 +165,9 @@ const SingUpPage = () => {
 					</Form>
 				</CardContent>
 				<div className='text-sm text-center'>
-					<span className='text-gray-500 me-1'>Already have account ?</span>
+					<span className='me-1'>Already have account ?</span>
 					<Link href='/login'>
-						<span className='text-gray-800 underline'>Login</span>
+						<span className='underline'>Login</span>
 					</Link>
 				</div>
 			</Card>

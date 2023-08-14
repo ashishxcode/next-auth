@@ -129,9 +129,10 @@ const LoginPage = () => {
 				</CardContent>
 
 				<div className='flex flex-col items-center gap-2 text-sm text-center'>
-					<Link href='/forgot-password'>
-						<span className='text-gray-900'>Forgot Password?</span>
+					<Link href='/signup' className='mb-2'>
+						Create a free account
 					</Link>
+					<Link href='/forgot-password'>Forgot Password?</Link>
 				</div>
 			</Card>
 		</section>
